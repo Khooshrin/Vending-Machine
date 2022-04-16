@@ -51,16 +51,14 @@ int main()
                                 cout<<"This item has already been purchased.\n";
                             else if(itemCode>=1 && itemCode<=9)
                             {
-                                if(quantity>items[itemCode-1].second.second.first)
+                                while(quantity>items[itemCode-1].second.second.first)
                                 {
                                     cout << "Quantity you wish to purchase exceeds quantity in Vending Machine.\nQuantity Available: "<<items[itemCode-1].second.second.first<<endl;
                                     cout << "If you wish to change your amount please re-enter the quantity else if you do not want to buy this item enter -1\n";
                                     cin >> quantity;
-                                    if(quantity==-1)
-                                        continue;
-                                    else
-                                        order.insert(pair<int,int>(itemCode,quantity));
                                 }
+                                if(quantity==-1)
+                                    continue;                                
                                 else
                                     order.insert(pair<int,int>(itemCode,quantity));
                             }
@@ -91,7 +89,7 @@ int main()
                             cost=cost+itr->second*items[itr->first-1].second.second.second;
                         }
                         cout << "\nFinal Price to Pay: " << cost << endl;
-                        cout << "\nThe machine accepts only certain denominations.\nPlease enter number of notes of each denomination you wish to pay with.";
+                        cout << "\nThe machine accepts only certain denominations.\nPlease enter number of notes of each denomination you wish to pay with.\n";
                         int amt=0;
                         map<int,int> pay;
                         while(true)
@@ -109,7 +107,8 @@ int main()
                             }
                             if(amt<cost)
                             {
-                                cout << "Full amount not paid\n"; 
+                                cout << "Full amount not paid.\nPayment Amount Remaining:" << (cost-amt) << "\nPlease take your money back and re-enter your payment amount.\n"; 
+                                pay.clear();
                                 continue;
                             }
                             else
@@ -144,7 +143,7 @@ int main()
                             }
                             if(chng==0)
                             {
-                                cout << "\nPlease accept your change.\nDenomination\tNumber of Notes\n";
+                                cout << "\nPayment Accepted.\nPlease accept your change.\nDenomination\tNumber of Notes\n";
                                 for(itr=change.begin();itr!=change.end();++itr)
                                 {
                                     cout << itr->first << "\t\t" << itr->second << endl;
@@ -154,19 +153,22 @@ int main()
                             }
                             else
                             {
-                                cout << "\nNot enough change in the machine. Please take your money back.";
-                                cout << "Change remaining: " << chng;
+                                cout << "\nNot enough change in the machine.\nPlease take your money back.\nYour order has been cancelled.";
                                 for(itr=pay.begin();itr!=pay.end();++itr)
                                 {
                                     map<int,int> :: iterator it = money.find(itr->first);
                                     it->second=it->second-itr->second;
+                                }
+                                for(itr=order.begin();itr!=order.end();++itr)
+                                {
+                                    items[itr->first-1].second.second.first=items[itr->first-1].second.second.first+itr->second;
                                 }
                                 break;
                             }
                         }
                         else
                         {
-                            cout << "Payment Accepted.\nThank you for using the Vending Machine.\n";
+                            cout << "Payment Accepted.\nNo change has to be returned.\nThank you for using the Vending Machine.\n";
                             return 0;
                         }
                     }
