@@ -179,13 +179,13 @@ int main()
                 break;
             case 2:
             {
-                cout<<"Description\tID\tQuantity\tPrice\n";
+                cout << "Displaying the current stocks of items :\n";
                 for(int i=0;i<9;i++)
                 {
                     cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                 }
             }
-                break;
+            break;
             case 3: 
             {
                 cout << "Denominations\tNumber of Notes\n";
@@ -197,7 +197,10 @@ int main()
             }
                 break;
             case 4:
-            return 0;          
+            return 0;
+            break;
+            default:
+            cout << "Invalid Option.\nPlease enter again.\n";        
         }
     }
     return 0;
