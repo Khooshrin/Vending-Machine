@@ -22,7 +22,7 @@ int main()
 
     while(choice!=4)
     {
-        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Exit\n";
+        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Delete Items\n6) Add Items\n7) Exit\n";
         cin >> choice;
 
         switch (choice)
@@ -297,6 +297,81 @@ int main()
             }
             break;
             case 4:
+            {
+                cout << "Current Denominations:\n";
+                map<int,int>::iterator itr;
+                for(itr=money.begin();itr!=money.end();++itr)
+                {
+                    cout << itr->first << endl;
+                }
+                cout << "Enter Denominations and Quantity you wish to add. Enter -1 when done.\n";
+                map<int,int> den;
+                while(true)
+                {
+                    int denomination=0,quantity=0,confirm = -2;
+                    cin >> denomination;
+                    if(denomination==-1)
+                    {
+                        if(den.empty()==false)
+                        {
+                            cout << "Denominations\tNumber of Notes\n";
+                            for(itr=den.begin();itr!=den.end();++itr)
+                            {
+                                cout << itr->first << "\t\t" << itr->second << endl;
+                            }
+                            cout << "Enter 1 to confirm, 0 to exit and -1 to Re-enter.\n";
+                            cin >> confirm;
+                            if(confirm==-1)
+                            {
+                                den.clear();
+                                continue;
+                            }
+                            /*else if(confirm==0)
+                            {
+                                break;
+                            }*/
+                            else if(confirm==1)
+                            {
+                               for(itr=den.begin();itr!=den.end();++itr)
+                                {
+                                    money.insert(pair<int,int>(itr->first,itr->second));
+                                } 
+                                cout << "Denominations have been added to machine.\n";
+                                for(itr=money.begin();itr!=money.end();++itr)
+                                {
+                                    cout << itr->first << "\t\t" << itr->second << endl;
+                                } 
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cin >> quantity;
+                        bool check=false;
+                        for(itr=money.begin();itr!=money.end();++itr)
+                        {
+                            if(denomination==itr->first)
+                            {
+                                cout << "The Vending Machine already has this denomination.\n";
+                                check=true;
+                                break;
+                            }
+                        }
+                        while(quantity>10)
+                        {
+                            cout << "The maximum number of notes is 10.\nKindly re-enter quantity or -1 if you do not want to add this denomination.\n";
+                            cin >> quantity;
+                            if(quantity==-1)
+                                break;
+                        }
+                        if(check==false && quantity>=0 && quantity<=10)
+                            den.insert(pair<int,int>(denomination,quantity));
+                    }
+                }
+            }
+            break;
+            case 7:
             return 0;
             break;
             default:
