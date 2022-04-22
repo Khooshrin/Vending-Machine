@@ -20,9 +20,9 @@ int main()
     money.insert(pair<int, int>(50,10));
     money.insert(pair<int, int>(100,10));
 
-    while(choice!=4)
+    while(choice!=7)
     {
-        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Delete Items\n6) Add Items\n7) Exit\n";
+        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Replace Items\n6) Remove Denominations\n7) Exit\n";
         cin >> choice;
 
         switch (choice)
@@ -49,8 +49,22 @@ int main()
                             cin >> quantity;
                             if(order.find(itemCode)!=order.end())
                                 cout<<"This item has already been purchased.\n";
-                            else if(itemCode>=1 && itemCode<=9)
+                            else
                             {
+                                bool check=false;
+                                for(int i=0;i<items.size();i++)
+                                {
+                                    if (items[i].second.first==itemCode)
+                                    {
+                                        check=true;
+                                        break;
+                                    }
+                                }
+                                if(check==false)
+                                {
+                                    cout << "Invalid Item ID\n";
+                                    continue;
+                                }
                                 while(quantity>items[itemCode-1].second.second.first)
                                 {
                                     cout << "Quantity you wish to purchase exceeds quantity in Vending Machine.\nQuantity Available: "<<items[itemCode-1].second.second.first<<endl;
@@ -62,8 +76,6 @@ int main()
                                 else
                                     order.insert(pair<int,int>(itemCode,quantity));
                             }
-                            else
-                                cout << "Invalid Item ID\n";
                         }
                     }
                     if(order.empty()==false)
@@ -197,9 +209,24 @@ int main()
                         else
                         { 
                             cin >> restockQuantity;
-                            if(itemCode>=1 && itemCode<=9)
+                            bool check=false;
+                            int i;
+                            for(i=0;i<items.size();i++)
                             {
-                                if((restockQuantity+items[itemCode-1].second.second.first)>10)
+                                if (items[i].second.first==itemCode)
+                                {
+                                    check=true;
+                                    break;
+                                }
+                            }
+                            if(check==false)
+                            {
+                                cout << "Invalid Item ID\n";
+                                continue;
+                            }
+                            else
+                            {
+                                if((restockQuantity+items[i].second.second.first)>10)
                                 {
                                     cout << "Quantity you wish to restock exceeds the maximum capacity of the item chosen\n The maz capacity for the chosen item is 10. Current quantity: "<<items[itemCode-1].second.second.first<<endl;
                                     cout << "If you wish to change the quantity please re-enter the quantity or else enter -1\n";
@@ -207,15 +234,13 @@ int main()
                                     if(restockQuantity==-1)
                                         continue;
                                     else
-                                        items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
+                                        items[i].second.second.first = items[i].second.second.first + restockQuantity;
                                         restock.insert(pair<int,int>(itemCode,restockQuantity));
                                 }
                                 else
-                                    items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
+                                    items[i].second.second.first = items[i].second.second.first + restockQuantity;
                                     restock.insert(pair<int,int>(itemCode,restockQuantity));
                             }
-                            else
-                                cout << "Invalid Item ID\n";
                         }
                     }
                     if(restock.empty()==false)
@@ -295,9 +320,9 @@ int main()
                 }
                 cout << "Enter Denominations and Quantity you wish to add. Enter -1 when done.\n";
                 map<int,int> den;
-                while(true)
+                int denomination=0,quantity=0,confirm = -2;
+                while(denomination!=-1)
                 {
-                    int denomination=0,quantity=0,confirm = -2;
                     cin >> denomination;
                     if(denomination==-1)
                     {
@@ -308,27 +333,26 @@ int main()
                             {
                                 cout << itr->first << "\t\t" << itr->second << endl;
                             }
-                            cout << "Enter 1 to confirm, 0 to exit and -1 to Re-enter.\n";
+                            int confirm=-1;
+                            cout << "Enter 1 to confirm or 0 to cancel.\n";
                             cin >> confirm;
-                            if(confirm==-1)
-                            {
-                                den.clear();
-                                continue;
-                            }
-                            else if(confirm==1)
+                            if(confirm==1)
                             {
                                for(itr=den.begin();itr!=den.end();++itr)
                                 {
                                     money.insert(pair<int,int>(itr->first,itr->second));
                                 } 
-                                cout << "Denominations have been added to machine.\n";
+                                cout << "Denominations have been added to machine.\nUpdated Money:\n";
                                 for(itr=money.begin();itr!=money.end();++itr)
                                 {
                                     cout << itr->first << "\t\t" << itr->second << endl;
                                 } 
-                                break;
+                                //break;
                             }
                         }
+                        else
+                            cout << "You do not wish to add any denomination.\n" << endl;
+                        break;
                     }
                     else
                     {
@@ -365,7 +389,7 @@ int main()
                 {
                     cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
                 }
-                cout << "Enter itemID of item you want to clear:\nEnter - 1 when done\n";       
+                cout << "Enter itemID of item you want to replace:\nEnter - 1 when done\n";       
                 while (true) 
                 {
                     cin >> itemCode;
@@ -428,6 +452,60 @@ int main()
                         else 
                             cout << "Invalid Item Code\n";                        
                     }
+                }
+            }
+            break;
+            case 6:
+            {
+                cout << "Current Deoniminations:\nDenominations\tNumber of Notes\n";
+                map<int,int>::iterator itr;
+                for(itr=money.begin();itr!=money.end();++itr)
+                {
+                    cout << itr->first << "\t\t" << itr->second << endl;
+                }
+                cout << "Enter Denominations you wish to remove.\nEnter -1 when done.\n";
+                int den=0;
+                vector<int> rem;
+                while(den!=-1)
+                {
+                    cin >> den;
+                    if(den==-1)
+                    {
+                        if(rem.empty()==false)
+                        {
+                            cout << "Please Confirm the denominations you wish to remove.\nEnter 1 to continue or 0 to cancel.\n";
+                            for(int i=0;i<rem.size();i++)
+                            {
+                                cout << rem[i] << endl;
+                            }
+                            int confirm=-1;
+                            cin >> confirm;
+                            if(confirm==0)
+                                break; 
+                            else if(confirm==1)
+                            {
+                                for(int i=0;i<rem.size();i++)
+                                {
+                                    money.erase(rem[i]);
+                                }
+                                cout << "Current Deoniminations:\nDenominations\tNumber of Notes\n";
+                                for(itr=money.begin();itr!=money.end();++itr)
+                                {
+                                    cout << itr->first << "\t\t" << itr->second << endl;
+                                }
+                                cout << "Denominations Successfully Removed.\nThank you for using the Vending Machine.\n";
+                                break;
+                            }
+                        }
+                        else
+                            cout << "You do not want to remove any denomination.\n";
+                    }
+                    if(money.find(den)==money.end())
+                    {
+                        cout << "The machine does not have this denomination.\n";
+                    }
+                    else
+                        rem.push_back(den);
                 }
             }
             break;
