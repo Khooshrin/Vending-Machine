@@ -195,81 +195,88 @@ int main()
                 while (true)
                 {
                     cout << "Displaying the current stocks of items :\n";
-                    for(int i=0;i<items.size();i++)
+                    for(int i=0;i<9;i++)
                     {
                         cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                     }
                     cout<<"Enter item ID of item you want to restock and quantity by which you want to restock\nWhen done please enter -1.\n\n";
                     int itemCode=0,restockQuantity=0;
-                    while(true)
-                    {
-                        cin >> itemCode;
-                        if(itemCode==-1)
-                            break;
-                        else
-                        { 
-                            cin >> restockQuantity;
-                            bool check=false;
-                            int i;
-                            for(i=0;i<items.size();i++)
-                            {
-                                if (items[i].second.first==itemCode)
-                                {
-                                    check=true;
-                                    break;
-                                }
-                            }
-                            if(check==false)
-                            {
-                                cout << "Invalid Item ID\n";
-                                continue;
-                            }
+                        while(true)
+                        {
+                            cin >> itemCode;
+                            if(itemCode==-1)
+                                break;
                             else
-                            {
-                                if((restockQuantity+items[i].second.second.first)>10)
+                            { 
+                                cin >> restockQuantity;
+                                if(itemCode>=1 && itemCode<=9)
                                 {
-                                    cout << "Quantity you wish to restock exceeds the maximum capacity of the item chosen\n The maz capacity for the chosen item is 10. Current quantity: "<<items[itemCode-1].second.second.first<<endl;
-                                    cout << "If you wish to change the quantity please re-enter the quantity or else enter -1\n";
-                                    cin >> restockQuantity;
-                                    if(restockQuantity==-1)
-                                        continue;
-                                    else
-                                        items[i].second.second.first = items[i].second.second.first + restockQuantity;
+                                    if(items[itemCode-1].second.second.first==10)
+                                    {
+                                        cout << "This item is at max capacity, cannot restock.\n";
+                                    }
+                                    else if(restockQuantity+items[itemCode-1].second.second.first<=10)
+                                    {
+                                        items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
                                         restock.insert(pair<int,int>(itemCode,restockQuantity));
+                                    }
+                                    else
+                                    {
+                                        while((restockQuantity+items[itemCode-1].second.second.first)>10)
+                                        {
+                                            cout << "Quantity you wish to restock exceeds the maximum capacity of the item chosen.\nThe max capacity for the chosen item is 10. Current quantity: "<<items[itemCode-1].second.second.first<<endl;
+                                            cout << "If you wish to change the quantity please re-enter the quantity or else enter -1\n";
+                                            cin >> restockQuantity;
+                                            if(restockQuantity==-1)
+                                                   continue;
+                                            else
+                                            {
+                                                items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
+                                                restock.insert(pair<int,int>(itemCode,restockQuantity));
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                                 else
-                                    items[i].second.second.first = items[i].second.second.first + restockQuantity;
-                                    restock.insert(pair<int,int>(itemCode,restockQuantity));
+                                    cout << "Invalid Item ID\n";
                             }
                         }
-                    }
+                
                     if(restock.empty()==false)
                     {
                         cout << "\nYour restock request is below.\nDescription\tItem ID \tQuantity\n";
                         map<int, int>::iterator itr;
                         for(itr=restock.begin();itr!=restock.end();++itr)
-                        cout << items[itr->first-1].first << "\t\t" << itr->first << "\t\t" << itr->second << endl;
+                            cout << items[itr->first-1].first << "\t\t" << itr->first << "\t\t" << itr->second << endl;
                         int confirm=-2;
                         cout << "Please confirm your order. Enter 1 to confirm, 0 to redo the order or -1 to exit." << endl;
                         cin  >> confirm;
+                        
                         if(confirm==-1)
-                            return 0;
+                            break;
                         else if(confirm==0)
                         {
+                            for(itr=restock.begin();itr!=restock.end();++itr)
+                                items[itr->first-1].second.second.first = items[itr->first-1].second.second.first - itr->second;
                             restock.clear();
-                            items[itemCode-1].second.second.first = items[itemCode-1].second.second.first - restockQuantity;
                             continue;
                         }
+                        
                         cout << "\nThe updated stock is below.\nDescription\tItem ID \tQuantity\n";
-                        for(int i=0;i<items.size();i++)
+                        
+                        
+                        for(int i=0;i<9;i++)
                         {
                             cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                         }
-                        break;
-                        cout << "Thank you for using the Vending Machine.\n";
+                       break;
+                       cout << "Thank you for using the Vending Machine.\n";
+
                     }
                     else
-                        break;
+                    break;
+
                 }
             }
             break;
@@ -286,9 +293,14 @@ int main()
                 map<int, int>::iterator itr1;
                 for(itr1=money.begin();itr1!=money.end();)
                 {
-                    cout << "The machine has " << itr1->second <<" notes of Rs." << itr1->first << endl;
+                    if(itr1->second>=10)
+                    {
+                        cout << "The machine has sufficient notes of Rs." << itr1->first << endl;
+                        itr1++;
+                        continue;
+                    }
                     int nons=(itr1->second>=10)? 0 : (10-itr1->second);
-                    cout << "You can add " << nons << " notes." << endl;
+                    cout << "You can add " << nons << " notes of the denomination Rs." << itr1->first << endl;
                     cout << "Enter the number of notes you wish to add of the denomination Rs." << itr1->first << endl;
                     cin >> num;
                     if(num>nons)
@@ -301,13 +313,13 @@ int main()
                         itr1++;
                     }
                 }
-                cout << "Denominations\tNumber of Notes\n";
+                cout << "\nDenominations\tNumber of Notes\n";
                 map<int, int>::iterator itr2;
                 for(itr2=money.begin();itr2!=money.end();++itr2)
                 {
                     cout << itr2->first << "\t\t" << itr2->second << endl;;
                 }
-                cout << "Thank You! Money Updated!";
+                cout << "\nThank You! Money Updated!";
             }
             break;
             case 4:
