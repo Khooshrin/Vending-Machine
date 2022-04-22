@@ -33,7 +33,7 @@ int main()
                 while(true)
                 {
                     cout<<"Description\tID\tQuantity\tPrice\n";
-                    for(int i=0;i<9;i++)
+                    for(int i=0;i<items.size();i++)
                     {
                         cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                     }
@@ -183,80 +183,69 @@ int main()
                 while (true)
                 {
                     cout << "Displaying the current stocks of items :\n";
-                    for(int i=0;i<9;i++)
+                    for(int i=0;i<items.size();i++)
                     {
                         cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                     }
                     cout<<"Enter item ID of item you want to restock and quantity by which you want to restock\nWhen done please enter -1.\n\n";
                     int itemCode=0,restockQuantity=0;
-                        while(true)
-                        {
-                            cin >> itemCode;
-                            if(itemCode==-1)
-                                break;
-                            else
-                            { 
-                                cin >> restockQuantity;
-                               if(itemCode>=1 && itemCode<=9)
+                    while(true)
+                    {
+                        cin >> itemCode;
+                        if(itemCode==-1)
+                            break;
+                        else
+                        { 
+                            cin >> restockQuantity;
+                            if(itemCode>=1 && itemCode<=9)
+                            {
+                                if((restockQuantity+items[itemCode-1].second.second.first)>10)
                                 {
-                                    if((restockQuantity+items[itemCode-1].second.second.first)>10)
-                                    {
-                                        cout << "Quantity you wish to restock exceeds the maximum capacity of the item chosen\n The maz capacity for the chosen item is 10. Current quantity: "<<items[itemCode-1].second.second.first<<endl;
-                                        cout << "If you wish to change the quantity please re-enter the quantity or else enter -1\n";
-                                        cin >> restockQuantity;
-                                        if(restockQuantity==-1)
-                                               continue;
-                                        else
-                                            items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
-                                            restock.insert(pair<int,int>(itemCode,restockQuantity));
-                                         
-                                    }
-                                     else
+                                    cout << "Quantity you wish to restock exceeds the maximum capacity of the item chosen\n The maz capacity for the chosen item is 10. Current quantity: "<<items[itemCode-1].second.second.first<<endl;
+                                    cout << "If you wish to change the quantity please re-enter the quantity or else enter -1\n";
+                                    cin >> restockQuantity;
+                                    if(restockQuantity==-1)
+                                        continue;
+                                    else
                                         items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
                                         restock.insert(pair<int,int>(itemCode,restockQuantity));
-                                        
-                                
                                 }
                                 else
-                                cout << "Invalid Item ID\n";
+                                    items[itemCode-1].second.second.first = items[itemCode-1].second.second.first + restockQuantity;
+                                    restock.insert(pair<int,int>(itemCode,restockQuantity));
                             }
+                            else
+                                cout << "Invalid Item ID\n";
                         }
-                
+                    }
                     if(restock.empty()==false)
                     {
                         cout << "\nYour restock request is below.\nDescription\tItem ID \tQuantity\n";
-                         map<int, int>::iterator itr;
-                         for(itr=restock.begin();itr!=restock.end();++itr)
+                        map<int, int>::iterator itr;
+                        for(itr=restock.begin();itr!=restock.end();++itr)
                         cout << items[itr->first-1].first << "\t\t" << itr->first << "\t\t" << itr->second << endl;
                         int confirm=-2;
-                         cout << "Please confirm your order. Enter 1 to confirm, 0 to redo the order or -1 to exit." << endl;
+                        cout << "Please confirm your order. Enter 1 to confirm, 0 to redo the order or -1 to exit." << endl;
                         cin  >> confirm;
-                        
                         if(confirm==-1)
                             return 0;
                         else if(confirm==0)
                         {
-                        restock.clear();
+                            restock.clear();
                             items[itemCode-1].second.second.first = items[itemCode-1].second.second.first - restockQuantity;
                             continue;
                         }
-                        
                         cout << "\nThe updated stock is below.\nDescription\tItem ID \tQuantity\n";
-                        
-                        
-                        for(int i=0;i<9;i++)
+                        for(int i=0;i<items.size();i++)
                         {
                             cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                         }
-                       break;
-                       cout << "Thank you for using the Vending Machine.\n";
-
+                        break;
+                        cout << "Thank you for using the Vending Machine.\n";
                     }
                     else
-                    break;
-
+                        break;
                 }
-
             }
             break;
             case 3: 
@@ -326,10 +315,6 @@ int main()
                                 den.clear();
                                 continue;
                             }
-                            /*else if(confirm==0)
-                            {
-                                break;
-                            }*/
                             else if(confirm==1)
                             {
                                for(itr=den.begin();itr!=den.end();++itr)
@@ -367,6 +352,81 @@ int main()
                         }
                         if(check==false && quantity>=0 && quantity<=10)
                             den.insert(pair<int,int>(denomination,quantity));
+                    }
+                }
+            }
+            break;
+            case 5:
+            {   
+                vector<int> dlt;
+                int itemCode=0;      
+                cout << "Current items stock";
+                for(int i=0;i<items.size();i++)
+                {
+                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
+                }
+                cout << "Enter itemID of item you want to clear:\nEnter - 1 when done\n";       
+                while (true) 
+                {
+                    cin >> itemCode;
+                    if(itemCode==-1)
+                    {
+                        if(dlt.empty()==false)
+                        {
+                            cout<<"Item Code of Items to be cleared\n";
+                            for(int i=0;i<dlt.size();i++)
+                            {
+                                cout<<dlt[i]<<endl;
+                            }   
+                            int confirm=-2;
+                            cout << "Enter 1 to confirm your action, 0 to redo and -1 to exit\n";
+                            cin >> confirm;
+                            if(confirm==-1)
+                                break;
+                            else if(confirm==0)
+                            {
+                                dlt.clear();
+                                cout << "Current items stock:\n";
+                                for(int i=0;i<items.size();i++)
+                                {
+                                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
+                                }
+                                cout << "Enter itemID of item you want to clear:\nEnter - 1 when done\n";
+                                continue;                             
+                            }
+                            for(auto it1 = dlt.begin(); it1!=dlt.end();++it1)
+                            {
+                                for(auto it2=items.begin(); it2!=items.end();++it2)
+                                {
+                                    if(*it1==it2->second.first)
+                                    {
+                                        items.erase(it2);
+                                        break;
+                                    }
+                                }
+                            }
+                            cout<<"Updated Items in Vending Machine:\nDescription\tID\tQuantity\tPrice\n";
+                            for(int i=0;i<items.size();i++)
+                            {
+                                cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
+                            }
+                            cout << "Thank you for using the Vending Machine.\n";
+                            break;
+                        }
+                        else
+                            break;
+                    }
+                    else
+                    {
+                        if(itemCode>=1 && itemCode<=9)
+                        {
+                            if(find(dlt.begin(),dlt.end(),itemCode)==dlt.end())
+                                dlt.push_back(itemCode);
+                            else
+                                cout << "You have already entered this value\n";
+                        }
+                        else 
+                            cout << "Invalid Item Code\n";                        
                     }
                 }
             }
