@@ -22,7 +22,7 @@ int main()
 
     while(choice!=7)
     {
-        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Replace Items\n6) Remove Denominations\n7) Exit\n";
+        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Remove Items\n6) Remove Denominations\n7) Exit\n";
         cin >> choice;
 
         switch (choice)
@@ -63,6 +63,11 @@ int main()
                                 if(check==false)
                                 {
                                     cout << "Invalid Item ID\n";
+                                    continue;
+                                }
+                                if(items[itemCode-1].second.second.first==0)
+                                {
+                                    cout << "There is no stock for this item.\nCannot buy the item.\n";
                                     continue;
                                 }
                                 while(quantity>items[itemCode-1].second.second.first)
@@ -195,6 +200,7 @@ int main()
                 while (true)
                 {
                     cout << "Displaying the current stocks of items :\n";
+                    cout<<"Description\tID\tQuantity\tPrice\n";
                     for(int i=0;i<9;i++)
                     {
                         cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
@@ -209,7 +215,9 @@ int main()
                             else
                             { 
                                 cin >> restockQuantity;
-                                if(itemCode>=1 && itemCode<=9)
+                                if(items[itemCode-1].first=="EMPTY")
+                                    cout << "This slot is empty.\nPlease add item before refill.\n";
+                                else if(itemCode>=1 && itemCode<=9)
                                 {
                                     if(items[itemCode-1].second.second.first==10)
                                     {
@@ -396,7 +404,8 @@ int main()
             {   
                 vector<int> dlt;
                 int itemCode=0;      
-                cout << "Current items stock";
+                cout << "Current items stock:\n";
+                cout<<"Description\tID\tQuantity\tPrice\n";
                 for(int i=0;i<items.size();i++)
                 {
                     cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
@@ -423,6 +432,7 @@ int main()
                             {
                                 dlt.clear();
                                 cout << "Current items stock:\n";
+                                cout<<"Description\tID\tQuantity\tPrice\n";
                                 for(int i=0;i<items.size();i++)
                                 {
                                     cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
@@ -436,7 +446,9 @@ int main()
                                 {
                                     if(*it1==it2->second.first)
                                     {
-                                        items.erase(it2);
+                                        items[*it1-1].first="EMPTY";
+                                        items[*it1-1].second.second.first=0;
+                                        items[*it1-1].second.second.second=0;
                                         break;
                                     }
                                 }
