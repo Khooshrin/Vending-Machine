@@ -20,9 +20,9 @@ int main()
     money.insert(pair<int, int>(50,10));
     money.insert(pair<int, int>(100,10));
 
-    while(choice!=7)
+    while(choice!=8)
     {
-        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Remove Items\n6) Remove Denominations\n7) Exit\n";
+        cout << "\nEnter choice:\n1) Buy Items \n2) Refill Items \n3) Refill Money\n4) Add denominations\n5) Remove Items\n6) Remove Denominations\n7) Add Items\n8) Exit\n";
         cin >> choice;
 
         switch (choice)
@@ -408,7 +408,7 @@ int main()
                 cout<<"Description\tID\tQuantity\tPrice\n";
                 for(int i=0;i<items.size();i++)
                 {
-                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
+                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                 }
                 cout << "Enter itemID of item you want to replace:\nEnter - 1 when done\n";       
                 while (true) 
@@ -435,7 +435,7 @@ int main()
                                 cout<<"Description\tID\tQuantity\tPrice\n";
                                 for(int i=0;i<items.size();i++)
                                 {
-                                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<endl;
+                                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
                                 }
                                 cout << "Enter itemID of item you want to clear:\nEnter - 1 when done\n";
                                 continue;                             
@@ -534,6 +534,45 @@ int main()
             }
             break;
             case 7:
+            {
+                cout << "Current items stock:\n";
+                cout<<"Description\tID\tQuantity\tPrice\n";
+                for(int i=0;i<items.size();i++)
+                {
+                    cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
+                }
+                cout << "Enter itemID of item you want to add:\nEnter - 1 to cancel.\n";
+                int itemCode,quantity,price;
+                string desc;
+                cin >> itemCode;
+                if(itemCode==-1)
+                    break;
+                if(items[itemCode-1].first!="EMPTY")
+                    cout << "This slot contains items.\nItems cannot be added to this slot.\n" ;
+                else
+                {
+                    cout << "Please enter item description, quantity and price.\n";
+                    cin >> desc >> quantity >> price;
+                    while(quantity>10)
+                    {
+                        cout << "Maximum quantity of an item is 10.\nPlease re-enter a quantity or -1 to cancel.\n";
+                        cin >> quantity;
+                    }
+                    if(quantity==-1)
+                        break;
+                    items[itemCode-1].first=desc;
+                    items[itemCode-1].second.second.first=quantity;
+                    items[itemCode-1].second.second.second=price;
+                    cout << "Updated items stock:\n";
+                    cout<<"Description\tID\tQuantity\tPrice\n";
+                    for(int i=0;i<items.size();i++)
+                    {
+                        cout<<items[i].first<<"\t\t"<<items[i].second.first<<"\t"<<items[i].second.second.first<<"\t\t"<<items[i].second.second.second<<endl;
+                    }
+                }
+            }
+            break;
+            case 8:
             return 0;
             break;
             default:
